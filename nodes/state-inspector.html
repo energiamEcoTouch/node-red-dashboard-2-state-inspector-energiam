@@ -1,0 +1,193 @@
+<script type="text/javascript">
+    RED.nodes.registerType('state-inspector', {
+        category:     'EnergIAM',
+        color:        '#27F555',
+        icon:         'icons/energiam.png',
+        paletteLabel: 'state inspector',
+
+        defaults: {
+            name:        { value: '' },
+            // Dashboard 2.0 requiere estos campos para el widget
+            group:       { value: '', type: 'ui-group', required: true },
+            width:       { value: 0 },
+            height:      { value: 0 },
+            // Propiedades del nodo
+            maxColumnas: { value: 10,        validate: RED.validators.number() },
+            ordenFilas:  { value: 'arrival' },
+            colorTrue:   { value: '#3fb950' },
+            colorFalse:  { value: '#f85149' },
+            colorNum:    { value: '#58a6ff' },
+            colorStr:    { value: '#ffa657' },
+            colorNull:   { value: '#484f58' }
+        },
+
+        inputs:  1,
+        outputs: 0,
+
+        label: function () {
+            return this.name || 'state inspector'
+        },
+        labelStyle: function () {
+            return this.name ? 'node_label_italic' : ''
+        },
+
+        oneditprepare: function () {
+            const colores = ['colorTrue', 'colorFalse', 'colorNum', 'colorStr', 'colorNull']
+            colores.forEach(id => {
+                $(`#node-input-${id}`).val(this[id] || '')
+            })
+        }
+    })
+</script>
+
+<script type="text/html" data-template-name="state-inspector">
+
+    <div class="form-row">
+        <label for="node-input-name">
+            <i class="fa fa-tag"></i> Nombre
+        </label>
+        <input type="text" id="node-input-name" placeholder="state inspector">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-group">
+            <i class="fa fa-table"></i> Grupo
+        </label>
+        <input type="text" id="node-input-group">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-width">
+            <i class="fa fa-arrows-h"></i> Ancho
+        </label>
+        <input type="number" id="node-input-width" placeholder="0 = auto" style="width:60px">
+        &nbsp;
+        <label for="node-input-height" style="width:auto">
+            <i class="fa fa-arrows-v"></i> Alto
+        </label>
+        <input type="number" id="node-input-height" placeholder="0 = auto" style="width:60px">
+    </div>
+
+    <hr>
+
+    <div class="form-row">
+        <label for="node-input-maxColumnas">
+            <i class="fa fa-columns"></i> Máx. columnas
+        </label>
+        <input type="number" id="node-input-maxColumnas" min="1" max="50" placeholder="10" style="width:60px">
+        <span style="margin-left:8px; font-size:11px; color:#888">
+            La más antigua se descarta al superar el límite (FIFO)
+        </span>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-ordenFilas">
+            <i class="fa fa-sort"></i> Orden filas
+        </label>
+        <select id="node-input-ordenFilas" style="width:auto">
+            <option value="arrival">Orden de llegada</option>
+            <option value="alpha">Alfabético</option>
+        </select>
+    </div>
+
+    <hr>
+
+    <div class="form-row">
+        <label style="width:100%; font-weight:600; margin-bottom:10px; font-size:12px">
+            <i class="fa fa-paint-brush"></i> Colores por tipo de valor
+        </label>
+    </div>
+
+    <div class="form-row" style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-left:20px">
+
+        <div style="display:flex; align-items:center; gap:6px">
+            <input type="color" id="node-input-colorTrue" style="width:32px; height:26px; padding:1px; border:1px solid #ccc; border-radius:3px; cursor:pointer">
+            <label style="margin:0; width:auto; font-size:12px; color:#3fb950; font-weight:600">true</label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px">
+            <input type="color" id="node-input-colorFalse" style="width:32px; height:26px; padding:1px; border:1px solid #ccc; border-radius:3px; cursor:pointer">
+            <label style="margin:0; width:auto; font-size:12px; color:#f85149; font-weight:600">false</label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px">
+            <input type="color" id="node-input-colorNum" style="width:32px; height:26px; padding:1px; border:1px solid #ccc; border-radius:3px; cursor:pointer">
+            <label style="margin:0; width:auto; font-size:12px; color:#58a6ff; font-weight:600">número</label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px">
+            <input type="color" id="node-input-colorStr" style="width:32px; height:26px; padding:1px; border:1px solid #ccc; border-radius:3px; cursor:pointer">
+            <label style="margin:0; width:auto; font-size:12px; color:#ffa657; font-weight:600">string</label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px">
+            <input type="color" id="node-input-colorNull" style="width:32px; height:26px; padding:1px; border:1px solid #ccc; border-radius:3px; cursor:pointer">
+            <label style="margin:0; width:auto; font-size:12px; color:#8b949e; font-weight:600">null/—</label>
+        </div>
+
+    </div>
+
+</script>
+
+<script type="text/html" data-help-name="state-inspector">
+    <p>
+        Widget nativo de <strong>Node-RED Dashboard 2.0</strong> que captura snapshots de variables
+        en distintos momentos y los muestra como una tabla comparativa de estados.
+    </p>
+    <p>
+        Cada snapshot es una <strong>columna</strong>. Cada variable observada es una <strong>fila</strong>.
+        El valor en la celda es el valor de esa variable en ese momento.
+    </p>
+
+    <h3>Entrada</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>
+            <code>{ nombre: "NombreEstado", valores: { var1: val1, ... } }</code><br>
+            Agrega o actualiza una columna. Si el nombre ya existe, reemplaza los valores en su lugar.
+        </dd>
+
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>
+            <code>state-inspector/reset</code> — limpia todas las columnas.<br>
+            <code>state-inspector/remove</code> — elimina la columna indicada en
+            <code>msg.payload.nombre</code>.
+        </dd>
+    </dl>
+
+    <h3>Acciones via payload</h3>
+    <dl class="message-properties">
+        <dt>payload.action = "reset"</dt>
+        <dd>Limpia toda la tabla.</dd>
+        <dt>payload.action = "remove", payload.nombre = "X"</dt>
+        <dd>Elimina la columna "X".</dd>
+    </dl>
+
+    <h3>Coloreado semántico</h3>
+    <ul>
+        <li><code>true</code> → verde (configurable)</li>
+        <li><code>false</code> → rojo (configurable)</li>
+        <li>números → azul (configurable)</li>
+        <li>strings → naranja (configurable)</li>
+        <li>null/undefined → gris (configurable)</li>
+    </ul>
+
+    <h3>Notas de diseño</h3>
+    <ul>
+        <li>El nodo es agnóstico de la fuente: funciona con flow.context(), MQTT, OPC-UA, DB, etc.</li>
+        <li>Cada instancia del nodo mantiene su estado interno independiente.</li>
+        <li>Las nuevas keys en <code>valores</code> se agregan automáticamente como filas.</li>
+        <li>Al superar el máximo de columnas, se descarta la más antigua (FIFO).</li>
+        <li>Los headers y la primera columna son sticky para facilitar el scroll.</li>
+    </ul>
+
+    <h3>Ejemplo</h3>
+    <pre><code>msg.payload = {
+    nombre: "Habilitado",
+    valores: {
+        enable:      flow.get('enable'),
+        jog:         flow.get('jog'),
+        valorActual: flow.get('valorActual')
+    }
+}</code></pre>
+</script>

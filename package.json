@@ -1,0 +1,73 @@
+{
+    "name": "node-red-dashboard-2-state-inspector-energiam",
+    "version": "0.1.0",
+    "description": "Native Dashboard 2.0 widget for Node-RED — capture variable snapshots at different machine states and compare them side-by-side in a live table. Data-source agnostic, designed for IIoT state machine debugging.",
+    "main": "nodes/state-inspector.js",
+    "keywords": [
+        "node-red",
+        "node-red-dashboard",
+        "node-red-dashboard-2",
+        "dashboard",
+        "energiam",
+        "state",
+        "inspector",
+        "debug",
+        "table",
+        "context",
+        "iiot",
+        "widget",
+        "monitoring",
+        "state-machine"
+    ],
+    "author": {
+        "name": "EnergIAM EcoTouch",
+        "url": "https://github.com/energiamEcoTouch"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/energiamEcoTouch/node-red-dashboard-2-state-inspector-energiam.git"
+    },
+    "homepage": "https://github.com/energiamEcoTouch/node-red-dashboard-2-state-inspector-energiam#readme",
+    "bugs": {
+        "url": "https://github.com/energiamEcoTouch/node-red-dashboard-2-state-inspector-energiam/issues"
+    },
+    "files": [
+        "nodes/",
+        "resources/",
+        "examples/",
+        "png/",
+        "README.md",
+        "LICENSE"
+    ],
+    "node-red": {
+        "version": ">=3.0.0",
+        "nodes": {
+            "state-inspector": "nodes/state-inspector.js"
+        }
+    },
+    "node-red-dashboard-2": {
+        "widgets": {
+            "state-inspector": {
+                "output": "state-inspector.umd.js",
+                "component": "UIStateInspector"
+            }
+        }
+    },
+    "peerDependencies": {
+        "@flowfuse/node-red-dashboard": ">=1.0.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.0.0",
+        "vite": "^5.0.0",
+        "vite-plugin-css-injected-by-js": "^5.0.1",
+        "vue": "^3.4.0"
+    },
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite build --watch"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

@@ -1,0 +1,5 @@
+node_modules/
+state-inspector/
+*.log
+.DS_Store
+Thumbs.db
