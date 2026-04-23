@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="png/splash.png" width="110" alt="EnergIAM State Inspector"/>
+  <img src="png/energiam.png" width="110" alt="EnergIAM State Inspector"/>
 </p>
 
 <h1 align="center">State Inspector</h1>
