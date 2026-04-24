@@ -214,7 +214,9 @@ export default {
 
         onLoad (msg, state) {
             const data = (state && state.payload) ? state : msg
-            if (data && data.payload) this.onMsg(data)
+            if (data && data.payload && Array.isArray(data.payload.columnas) && data.payload.columnas.length > 0) {
+                this.onMsg(data)
+            }
         },
 
         fmt (val) {
