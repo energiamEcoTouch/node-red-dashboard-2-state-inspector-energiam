@@ -136,11 +136,6 @@ module.exports = function (RED) {
         // onInput firma: (msg, send) — ui_base llama done() y emit automáticamente
         const evts = {
             onAction: true,
-            beforeSend: function (msg) {
-                const estado = getEstado()
-                msg.payload = buildPayload(estado)
-                return msg
-            },
             onInput: function (msg, send) {
                 const estado = procesarMensaje(msg)
                 msg.payload = buildPayload(estado)

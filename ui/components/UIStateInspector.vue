@@ -288,6 +288,10 @@ export default {
 
     mounted () {
         this.loadCfg()
+        // Restaurar estado guardado por Dashboard 2.0 al navegar entre páginas
+        if (this.state && this.state.payload) {
+            this.onMsg(this.state)
+        }
         if (this.$socket) {
             this.$socket.on(`msg-input:${this.id}`,   this.onMsg)
             this.$socket.on(`widget-load:${this.id}`, this.onLoad)
