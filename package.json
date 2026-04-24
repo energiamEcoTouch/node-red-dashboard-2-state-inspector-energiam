@@ -1,6 +1,6 @@
 {
     "name": "node-red-dashboard-2-state-inspector-energiam",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Native Dashboard 2.0 widget for Node-RED — capture variable snapshots at different machine states and compare them side-by-side in a live table. Data-source agnostic, designed for IIoT state machine debugging.",
     "main": "nodes/state-inspector.js",
     "keywords": [

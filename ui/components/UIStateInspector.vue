@@ -133,7 +133,8 @@
 </template>
 
 <script>
-const STORAGE_KEY = 'esi-cfg'
+const STORAGE_KEY      = 'esi-cfg'
+const STORAGE_KEY_DATA = 'esi-data'
 
 const defaults = {
     fontSize:  12,
@@ -207,6 +208,8 @@ export default {
             if (Array.isArray(filas))                   this.filas       = filas
             if (colores && typeof colores === 'object') this.colores     = { ...this.colores, ...colores }
             if (this.props?.maxColumnas)                this.maxColumnas = parseInt(this.props.maxColumnas) || 10
+            // Persistir para restaurar al navegar entre páginas
+            try { localStorage.setItem(STORAGE_KEY_DATA + ':' + this.id, JSON.stringify({ columnas: this.columnas, filas: this.filas, colores: this.colores })) } catch (_) {}
         },
 
         onLoad (msg, state) {
@@ -288,10 +291,16 @@ export default {
 
     mounted () {
         this.loadCfg()
-        // Restaurar estado guardado por Dashboard 2.0 al navegar entre páginas
-        if (this.state && this.state.payload) {
-            this.onMsg(this.state)
-        }
+        // Restaurar tabla desde localStorage al navegar entre páginas
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY_DATA + ':' + this.id)
+            if (saved) {
+                const { columnas, filas, colores } = JSON.parse(saved)
+                if (Array.isArray(columnas)) this.columnas = columnas
+                if (Array.isArray(filas))    this.filas    = filas
+                if (colores)                 this.colores  = { ...this.colores, ...colores }
+            }
+        } catch (_) {}
         if (this.$socket) {
             this.$socket.on(`msg-input:${this.id}`,   this.onMsg)
             this.$socket.on(`widget-load:${this.id}`, this.onLoad)
